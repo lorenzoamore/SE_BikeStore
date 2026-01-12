@@ -31,7 +31,7 @@ class View:
 
         # Riga 1
         self.dd_category = ft.Dropdown(label="Categoria", width=200) # TODO: Gestire il dropdown
-
+        self.controller.handle_popola_dd()
         self.dp1 = ft.DatePicker(
             on_change=lambda e: print(f"Giorno selezionato: {self.dp1.value}"),
             on_dismiss=lambda e: print("Data non selezionata")
@@ -44,7 +44,7 @@ class View:
 
         self.dp2 = ft.DatePicker(
             on_change=lambda e: print(f"Giorno selezionato: {self.dp2.value}"),
-            on_dismiss=lambda e: print("Data non selezionata")
+        on_dismiss=lambda e: print("Data non selezionata")
         )
         self.page.overlay.append(self.dp2)
         self.pulsante_end_date = ft.ElevatedButton("Data Fine",
