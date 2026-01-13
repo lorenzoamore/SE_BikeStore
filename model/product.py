@@ -6,7 +6,8 @@ class Product:
     id: int
     product_name: str
     category_id : int
-    vendite : int
+    vendite: int
+
 
 
     def __str__(self):

@@ -8,8 +8,6 @@ class Controller:
     def __init__(self, view: View, model: Model):
         self._view = view
         self._model = model
-        self.best_path = []
-        self.best_peso = -1
 
     def set_dates(self):
         first, last = self._model.get_date_range()
@@ -72,48 +70,19 @@ class Controller:
     def handle_cerca_cammino(self, e):
         """ Handler per gestire il problema ricorsivo di ricerca del cammino """
         # TODO
-        self.best_path = []
-        self.best_peso = -1
         p = self._view.dd_prodotto_iniziale.value
         a = self._view.dd_prodotto_finale.value
-        partenza = ""
-        arrivo = ""
-        for n in self._model.G.nodes():
-            if n.product_name == p:
-                partenza = n
-            if n.product_name == a:
-                arrivo = n
         lunghezza = int(self._view.txt_lunghezza_cammino.value)
-        self._ricorsione(lunghezza,0,[partenza],arrivo)
-        if len(self.best_path) == 0:
+        self._model.best_cammino(lunghezza,p,a)
+        if len(self._model.best_path) == 0:
             self._view.show_alert("Nessun cammino trovato con i dati di inizio e fine richiesti")
         else:
             self._view.txt_risultato.clean()
             self._view.txt_risultato.controls.append(ft.Text("Cammino migliore:"))
-            for a in self.best_path:
+            for a in self._model.best_path:
                 self._view.txt_risultato.controls.append(ft.Text(f"{a}"))
-            self._view.txt_risultato.controls.append(ft.Text(f"Score: {self.best_peso}"))
+            self._view.txt_risultato.controls.append(ft.Text(f"Score: {self._model.best_peso}"))
             self._view.update()
-
-    def _ricorsione(self,lunghezza,peso,path,arrivo):
-        if len(path) == lunghezza:
-            print(f"Raggiunta lunghezza {lunghezza}. Ultimo nodo: {path[-1]}, Target: {arrivo}")
-            if path[-1] == arrivo:
-                print(f"TROVATOOOOOO")
-                if peso > self.best_peso:
-                    self.best_peso = peso
-                    self.best_path = path.copy()
-            return
-
-        for v in list(self._model.G.successors(path[-1])):
-            if v not in path:
-                p = self._model.G[path[-1]][v]["weight"]
-                path.append(v)
-                self._ricorsione(lunghezza,
-                                 peso+p,
-                                 path,
-                                 arrivo)
-                path.pop()
 
     def handle_popola_dd(self):
         self._model.trova_categorie()
